@@ -79,3 +79,51 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+canvas {
+  border-radius: 1px 1px 1px / 1px 1px;
+
+  /* It is equivalent to: */
+  border-top-left-radius: 20px 20px;
+  border-top-right-radius: 20px 20px;
+  border-bottom-right-radius: 20px 20px;
+  border-bottom-left-radius: 20px 20px;
+
+}
+
+div {
+  display: inline-block;
+  margin: 0 0.5rem 2rem 1rem;
+  padding: 0.5rem;
+  height: 100px;
+  width: 190px;
+  vertical-align: top;
+  background-color: #222;
+
+  color: black;
+  
+  border-radius: 4px 3px 6px / 2px 4px;
+
+  border-top-left-radius: 4px 2px;
+  border-top-right-radius: 3px 4px;
+  border-bottom-right-radius: 6px 2px;
+  border-bottom-left-radius: 3px 4px;
+  
+}
+
+div:nth-child(1) {
+  filter: drop-shadow(16px 16px);
+}
+
+div:nth-child(2) {
+  filter: drop-shadow(16px 16px black);
+}
+
+div:nth-child(3) {
+  filter: drop-shadow(black 1rem 1rem 10px);
+}
+
+div:nth-child(4) {
+  filter: drop-shadow(-16px -6px black);
+}
+
