@@ -23,6 +23,34 @@ ctx.fillStyle = "yellow";
 ctx.fillRect(canvasX, canvasY, canvas.width, canvas.height);
 app.append(canvas);
 
+// clear canvas button
+const button = "clear";
+const mainButton = document.createElement("button");
+mainButton.innerHTML = button;
+app.append(mainButton);
+mainButton.addEventListener("click", () => {
+  arrayOfLines = [];
+  notify("drawing-changed");
+});
+
+// undo button
+const button2 = "undo";
+const undoButton = document.createElement("button");
+undoButton.innerHTML = button2;
+app.append(undoButton);
+undoButton.addEventListener("click", () => {
+  console.log("Undo!");
+});
+
+// redo button
+const button3 = "redo";
+const redoButton = document.createElement("button");
+redoButton.innerHTML = button3;
+app.append(redoButton);
+redoButton.addEventListener("click", () => {
+  console.log("Redo!");
+});
+
 // Drawing creation
 let isDrawing = false;
 let x = 0;
@@ -54,7 +82,6 @@ canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
   y = e.offsetY;
   isDrawing = true;
-  // initialize array of coordinates
   currentLine = [];
   currentLine.push({ x, y });
   notify("drawing-changed");
@@ -92,16 +119,6 @@ function drawLine(ctx: CanvasRenderingContext2D, points: Point[]) {
 }
 
 //onmousemove = (event) => { };
-
-// clear canvas
-const button = "clear";
-const mainButton = document.createElement("button");
-mainButton.innerHTML = button;
-app.append(mainButton);
-mainButton.addEventListener("click", () => {
-  arrayOfLines = [];
-  notify("drawing-changed");
-});
 
 // FUTURE STEPS:
 // Store the 2 points
