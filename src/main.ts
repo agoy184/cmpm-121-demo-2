@@ -23,44 +23,19 @@ ctx.fillStyle = "yellow";
 ctx.fillRect(canvasX, canvasY, canvas.width, canvas.height);
 app.append(canvas);
 
-// clear canvas button
-const button = "clear";
-const mainButton = document.createElement("button");
-mainButton.innerHTML = button;
-app.append(mainButton);
-mainButton.addEventListener("click", () => {
-  arrayOfLines = [];
-  notify("drawing-changed");
-});
-
-// undo button
-const button2 = "undo";
-const undoButton = document.createElement("button");
-undoButton.innerHTML = button2;
-app.append(undoButton);
-undoButton.addEventListener("click", () => {
-  console.log("Undo!");
-});
-
-// redo button
-const button3 = "redo";
-const redoButton = document.createElement("button");
-redoButton.innerHTML = button3;
-app.append(redoButton);
-redoButton.addEventListener("click", () => {
-  console.log("Redo!");
-});
-
 // Drawing creation
 let isDrawing = false;
 let x = 0;
 let y = 0;
+const zero = 0;
 interface Point {
   x: number;
   y: number;
 }
 let currentLine: Point[] = [];
+//let undidLine: Point[] = [];
 let arrayOfLines: Point[][] = [];
+const undoneLines: Point[][] = [];
 function notify(name: "drawing-changed") {
   canvas.dispatchEvent(new Event(name));
 }
@@ -77,6 +52,50 @@ canvas.addEventListener(
   },
   false
 );
+
+// Mkae a class, store info of x/y pairs
+// have point interface inside the class
+// make a function inside this class called display (one parameter ctx)
+
+// clear canvas button
+const button = "clear";
+const mainButton = document.createElement("button");
+mainButton.innerHTML = button;
+app.append(mainButton);
+mainButton.addEventListener("click", () => {
+  arrayOfLines = [];
+  notify("drawing-changed");
+});
+
+// undo button
+const button2 = "undo";
+const undoButton = document.createElement("button");
+undoButton.innerHTML = button2;
+app.append(undoButton);
+undoButton.addEventListener("click", () => {
+  if (arrayOfLines.length > zero) {
+    const undidLine: Point[] | undefined = arrayOfLines.pop();
+    if (undidLine != undefined) {
+      undoneLines.push(undidLine);
+    }
+    notify("drawing-changed");
+  }
+});
+
+// redo button
+const button3 = "redo";
+const redoButton = document.createElement("button");
+redoButton.innerHTML = button3;
+app.append(redoButton);
+redoButton.addEventListener("click", () => {
+  if (undoneLines.length > zero) {
+    const redidLine: Point[] | undefined = undoneLines.pop();
+    if (redidLine != undefined) {
+      arrayOfLines.push(redidLine);
+    }
+    notify("drawing-changed");
+  }
+});
 
 canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
