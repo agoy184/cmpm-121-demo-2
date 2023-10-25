@@ -7,7 +7,7 @@ const app: HTMLDivElement = document.querySelector("#app")!;
 // Title
 const gameName = "Drawing Game!";
 document.title = gameName;
-const header = document.createElement("h1");
+const header = document.createElement("h2");
 header.innerHTML = gameName;
 app.append(header);
 
@@ -129,6 +129,24 @@ redoButton.addEventListener("click", () => {
     }
     notify("drawing-changed");
   }
+});
+
+// thin canvas button
+const button4 = "thin";
+const thinButton = document.createElement("button");
+thinButton.innerHTML = button4;
+app.append(thinButton);
+thinButton.addEventListener("click", () => {
+  console.log("thiN!");
+});
+
+// THICK canvas button
+const button5 = "thick";
+const thickButton = document.createElement("button");
+thickButton.innerHTML = button5;
+app.append(thickButton);
+thickButton.addEventListener("click", () => {
+  console.log("THICK!!");
 });
 
 canvas.addEventListener("mousedown", (e) => {
