@@ -32,10 +32,44 @@ interface Point {
   x: number;
   y: number;
 }
-let currentLine: Point[] = [];
+class Command {
+  //constructor(start, end) {
+  //}
+
+  arrayOfPoints: Point[] = [];
+
+  display(ctx: CanvasRenderingContext2D) {
+    let prevPoint = this.arrayOfPoints[zero];
+    ctx.beginPath();
+    for (let i = 1; i < this.arrayOfPoints.length; i++) {
+      const currentPoint = this.arrayOfPoints[i];
+      ctx.moveTo(prevPoint.x, prevPoint.y);
+      ctx.lineTo(currentPoint.x, currentPoint.y);
+      ctx.stroke();
+      prevPoint = currentPoint;
+    }
+  }
+
+  drawLine(ctx: CanvasRenderingContext2D, points: Point[]) {
+    const [firstPoint, ...remainingPoints] = points;
+    ctx.beginPath();
+    const { x, y } = firstPoint;
+    ctx.moveTo(x, y);
+    for (const { x, y } of remainingPoints) {
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  drag(x: number, y: number) {
+    this.arrayOfPoints.push({ x, y });
+  }
+}
+
+let currentLine: Command;
 //let undidLine: Point[] = [];
-let arrayOfLines: Point[][] = [];
-const undoneLines: Point[][] = [];
+let arrayOfLines: Command[] = [];
+const undoneLines: Command[] = [];
 function notify(name: "drawing-changed") {
   canvas.dispatchEvent(new Event(name));
 }
@@ -47,7 +81,7 @@ canvas.addEventListener(
     ctx.fillRect(canvasX, canvasY, canvas.width, canvas.height);
     // redraw lines
     for (const line of arrayOfLines) {
-      drawLine(ctx, line);
+      line.display(ctx);
     }
   },
   false
@@ -74,7 +108,7 @@ undoButton.innerHTML = button2;
 app.append(undoButton);
 undoButton.addEventListener("click", () => {
   if (arrayOfLines.length > zero) {
-    const undidLine: Point[] | undefined = arrayOfLines.pop();
+    const undidLine: Command | undefined = arrayOfLines.pop();
     if (undidLine != undefined) {
       undoneLines.push(undidLine);
     }
@@ -89,7 +123,7 @@ redoButton.innerHTML = button3;
 app.append(redoButton);
 redoButton.addEventListener("click", () => {
   if (undoneLines.length > zero) {
-    const redidLine: Point[] | undefined = undoneLines.pop();
+    const redidLine: Command | undefined = undoneLines.pop();
     if (redidLine != undefined) {
       arrayOfLines.push(redidLine);
     }
@@ -101,8 +135,8 @@ canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
   y = e.offsetY;
   isDrawing = true;
-  currentLine = [];
-  currentLine.push({ x, y });
+  currentLine = new Command();
+  currentLine.drag(x, y);
   notify("drawing-changed");
 });
 
@@ -110,7 +144,7 @@ canvas.addEventListener("mousemove", (e) => {
   if (isDrawing) {
     x = e.offsetX;
     y = e.offsetY;
-    currentLine.push({ x, y });
+    currentLine.drag(x, y);
     notify("drawing-changed");
   }
 });
@@ -126,24 +160,5 @@ canvas.addEventListener("mouseup", (e) => {
 });
 
 // ESlint doesn't like my use of any, but i disabled the warnings
-function drawLine(ctx: CanvasRenderingContext2D, points: Point[]) {
-  const [firstPoint, ...remainingPoints] = points;
-  ctx.beginPath();
-  const { x, y } = firstPoint;
-  ctx.moveTo(x, y);
-  for (const { x, y } of remainingPoints) {
-    ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-}
 
 //onmousemove = (event) => { };
-
-// FUTURE STEPS:
-// Store the 2 points
-// send an event
-// clear everything
-// draw everything
-// canvas addeventlistener redraw
-// be cool
-// (0,0) -> (0, 1) -> (0,2)
