@@ -28,14 +28,13 @@ let isDrawing = false;
 let x = 0;
 let y = 0;
 const zero = 0;
+const one = 1;
+let thickChecker = 0; // 0 is thin, 1 is thick
 interface Point {
   x: number;
   y: number;
 }
 class Command {
-  //constructor(start, end) {
-  //}
-
   arrayOfPoints: Point[] = [];
 
   display(ctx: CanvasRenderingContext2D) {
@@ -138,6 +137,7 @@ thinButton.innerHTML = button4;
 app.append(thinButton);
 thinButton.addEventListener("click", () => {
   console.log("thiN!");
+  thickChecker = zero;
 });
 
 // THICK canvas button
@@ -147,6 +147,7 @@ thickButton.innerHTML = button5;
 app.append(thickButton);
 thickButton.addEventListener("click", () => {
   console.log("THICK!!");
+  thickChecker = one;
 });
 
 canvas.addEventListener("mousedown", (e) => {
@@ -154,6 +155,16 @@ canvas.addEventListener("mousedown", (e) => {
   y = e.offsetY;
   isDrawing = true;
   currentLine = new Command();
+  if (thickChecker == one) {
+    currentLine.drag(x - one, y - one);
+    currentLine.drag(x - one, y);
+    currentLine.drag(x - one, y + one);
+    currentLine.drag(x, y - one);
+    currentLine.drag(x, y + one);
+    currentLine.drag(x + one, y - one);
+    currentLine.drag(x + one, y);
+    currentLine.drag(x + one, y + one);
+  }
   currentLine.drag(x, y);
   notify("drawing-changed");
 });
@@ -162,6 +173,16 @@ canvas.addEventListener("mousemove", (e) => {
   if (isDrawing) {
     x = e.offsetX;
     y = e.offsetY;
+    if (thickChecker == one) {
+      currentLine.drag(x - one, y - one);
+      currentLine.drag(x - one, y);
+      currentLine.drag(x - one, y + one);
+      currentLine.drag(x, y - one);
+      currentLine.drag(x, y + one);
+      currentLine.drag(x + one, y - one);
+      currentLine.drag(x + one, y);
+      currentLine.drag(x + one, y + one);
+    }
     currentLine.drag(x, y);
     notify("drawing-changed");
   }
