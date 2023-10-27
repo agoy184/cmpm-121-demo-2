@@ -29,7 +29,10 @@ let x = 0;
 let y = 0;
 const zero = 0;
 const one = 1;
-let thickChecker = 0; // 0 is thin, 1 is thick
+const two = 2;
+const five = 5;
+let toolRadius = 0;
+let thickChecker = 0; // 1 is thin, 5 is thick
 interface Point {
   x: number;
   y: number;
@@ -64,12 +67,30 @@ class Command {
     this.arrayOfPoints.push({ x, y });
   }
 }
+class Mouse {
+  x: number;
+  y: number;
+  radius: number;
+  constructor(x: number, y: number, radius: number) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+  }
+
+  drawLine(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
+    ctx.arc(x, y, this.radius, zero, two * Math.PI);
+    ctx.stroke();
+  }
+}
 
 let currentLine: Command;
 //let undidLine: Point[] = [];
 let arrayOfLines: Command[] = [];
 const undoneLines: Command[] = [];
-function notify(name: "drawing-changed") {
+let m: Mouse;
+
+function notify(name: string) {
   canvas.dispatchEvent(new Event(name));
 }
 canvas.addEventListener(
@@ -82,6 +103,15 @@ canvas.addEventListener(
     for (const line of arrayOfLines) {
       line.display(ctx);
     }
+  },
+  false
+);
+canvas.addEventListener(
+  "tool-moved",
+  () => {
+    // Fires whenever the user moves mouse over canvas.
+    console.log(`${toolRadius}`);
+    m.drawLine(ctx);
   },
   false
 );
@@ -132,12 +162,13 @@ redoButton.addEventListener("click", () => {
 
 // thin canvas button
 const button4 = "thin";
+
 const thinButton = document.createElement("button");
 thinButton.innerHTML = button4;
 app.append(thinButton);
 thinButton.addEventListener("click", () => {
   console.log("thiN!");
-  thickChecker = zero;
+  thickChecker = toolRadius = one;
 });
 
 // THICK canvas button
@@ -147,15 +178,22 @@ thickButton.innerHTML = button5;
 app.append(thickButton);
 thickButton.addEventListener("click", () => {
   console.log("THICK!!");
-  thickChecker = one;
+  thickChecker = toolRadius = five;
 });
 
 canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
   y = e.offsetY;
+  if (m) {
+    m.x = e.offsetX;
+    m.y = e.offsetY;
+    m.radius = toolRadius;
+  } else {
+    m = new Mouse(e.offsetX, e.offsetY, toolRadius);
+  }
   isDrawing = true;
   currentLine = new Command();
-  if (thickChecker == one) {
+  if (thickChecker > one) {
     currentLine.drag(x - one, y - one);
     currentLine.drag(x - one, y);
     currentLine.drag(x - one, y + one);
@@ -170,10 +208,17 @@ canvas.addEventListener("mousedown", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
+  if (m) {
+    m.x = e.offsetX;
+    m.y = e.offsetY;
+    m.radius = toolRadius;
+  } else {
+    m = new Mouse(e.offsetX, e.offsetY, toolRadius);
+  }
   if (isDrawing) {
     x = e.offsetX;
     y = e.offsetY;
-    if (thickChecker == one) {
+    if (thickChecker > one) {
       currentLine.drag(x - one, y - one);
       currentLine.drag(x - one, y);
       currentLine.drag(x - one, y + one);
@@ -186,9 +231,17 @@ canvas.addEventListener("mousemove", (e) => {
     currentLine.drag(x, y);
     notify("drawing-changed");
   }
+  notify("tool-moved");
 });
 
 canvas.addEventListener("mouseup", (e) => {
+  if (m) {
+    m.x = e.offsetX;
+    m.y = e.offsetY;
+    m.radius = toolRadius;
+  } else {
+    m = new Mouse(e.offsetX, e.offsetY, toolRadius);
+  }
   if (isDrawing) {
     x = e.offsetX;
     y = e.offsetY;
@@ -197,7 +250,5 @@ canvas.addEventListener("mouseup", (e) => {
     notify("drawing-changed");
   }
 });
-
-// ESlint doesn't like my use of any, but i disabled the warnings
 
 //onmousemove = (event) => { };
