@@ -5,7 +5,7 @@ import "./style.css";
 const app: HTMLDivElement = document.querySelector("#app")!;
 
 // Title
-const gameName = "Drawing Game!";
+const gameName = "Drawing Game!😂";
 document.title = gameName;
 const header = document.createElement("h2");
 header.innerHTML = gameName;
@@ -67,6 +67,21 @@ class Command {
     this.arrayOfPoints.push({ x, y });
   }
 }
+
+class Emoji {
+  x: number;
+  y: number;
+  emoji: string;
+  constructor(x: number, y: number, emoji: string) {
+    this.x = x;
+    this.y = y;
+    this.emoji = emoji;
+  }
+  display(ctx: CanvasRenderingContext2D) {
+    ctx.fillText(this.emoji, this.x, this.y);
+  }
+}
+
 class Mouse {
   x: number;
   y: number;
@@ -181,6 +196,30 @@ thickButton.addEventListener("click", () => {
   thickChecker = toolRadius = five;
 });
 
+let emojiInidcator = 0;
+const button6 = "😂";
+const sticker1 = document.createElement("button");
+sticker1.innerHTML = button6;
+app.append(sticker1);
+sticker1.addEventListener("click", (e) => {
+  emojiInidcator = 1;
+});
+
+const button7 = "🎃";
+const sticker2 = document.createElement("button");
+sticker2.innerHTML = button7;
+app.append(sticker2);
+sticker2.addEventListener("click", (e) => {
+  emojiInidcator = 2;
+});
+
+const button8 = "💀";
+const sticker3 = document.createElement("button");
+sticker3.innerHTML = button8;
+app.append(sticker3);
+sticker3.addEventListener("click", () => {
+  emojiInidcator = 3;
+});
 canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
   y = e.offsetY;
@@ -193,7 +232,16 @@ canvas.addEventListener("mousedown", (e) => {
   }
   isDrawing = true;
   currentLine = new Command();
-  if (thickChecker > one) {
+  if (emojiInidcator == 1) {
+    const newEmoji = new Emoji(x, y, "😂");
+    newEmoji.display(ctx);
+  } else if (emojiInidcator == 2) {
+    const newEmoji = new Emoji(x, y, "🎃");
+    newEmoji.display(ctx);
+  } else if (emojiInidcator == 3) {
+    const newEmoji = new Emoji(x, y, "💀");
+    newEmoji.display(ctx);
+  } else if (thickChecker > one) {
     currentLine.drag(x - one, y - one);
     currentLine.drag(x - one, y);
     currentLine.drag(x - one, y + one);
@@ -202,9 +250,11 @@ canvas.addEventListener("mousedown", (e) => {
     currentLine.drag(x + one, y - one);
     currentLine.drag(x + one, y);
     currentLine.drag(x + one, y + one);
+    notify("drawing-changed");
+  } else {
+    currentLine.drag(x, y);
+    notify("drawing-changed");
   }
-  currentLine.drag(x, y);
-  notify("drawing-changed");
 });
 
 canvas.addEventListener("mousemove", (e) => {
