@@ -30,6 +30,7 @@ let y = 0;
 const zero = 0;
 const one = 1;
 const two = 2;
+const three = 3;
 const five = 5;
 let toolRadius = 0;
 let thickChecker = 0; // 1 is thin, 5 is thick
@@ -100,9 +101,14 @@ class Mouse {
 }
 
 let currentLine: Command;
-//let undidLine: Point[] = [];
 let arrayOfLines: Command[] = [];
+let arrayOfEmojis: Emoji[] = [];
 const undoneLines: Command[] = [];
+const undoneEmojis: Emoji[] = [];
+//let latestAction = 0;
+//let latestUndidAction = 0;
+const arrayOfActions: number[] = []; // 1 for line, 2 for emoji
+const undoneActions: number[] = [];
 let m: Mouse;
 
 function notify(name: string) {
@@ -118,6 +124,10 @@ canvas.addEventListener(
     for (const line of arrayOfLines) {
       line.display(ctx);
     }
+    // redraw emojis
+    for (const emoji of arrayOfEmojis) {
+      emoji.display(ctx);
+    }
   },
   false
 );
@@ -125,15 +135,10 @@ canvas.addEventListener(
   "tool-moved",
   () => {
     // Fires whenever the user moves mouse over canvas.
-    console.log(`${toolRadius}`);
     m.drawLine(ctx);
   },
   false
 );
-
-// Mkae a class, store info of x/y pairs
-// have point interface inside the class
-// make a function inside this class called display (one parameter ctx)
 
 // clear canvas button
 const button = "clear";
@@ -142,21 +147,37 @@ mainButton.innerHTML = button;
 app.append(mainButton);
 mainButton.addEventListener("click", () => {
   arrayOfLines = [];
+  arrayOfEmojis = [];
   notify("drawing-changed");
 });
-
+let latestAction: number | undefined;
 // undo button
 const button2 = "undo";
 const undoButton = document.createElement("button");
 undoButton.innerHTML = button2;
 app.append(undoButton);
 undoButton.addEventListener("click", () => {
-  if (arrayOfLines.length > zero) {
-    const undidLine: Command | undefined = arrayOfLines.pop();
-    if (undidLine != undefined) {
-      undoneLines.push(undidLine);
+  latestAction = arrayOfActions.pop();
+  if (latestAction == one) {
+    if (arrayOfLines.length > zero) {
+      const undidLine: Command | undefined = arrayOfLines.pop();
+      if (undidLine != undefined) {
+        undoneLines.push(undidLine);
+      }
+      undoneActions.push(latestAction);
+      notify("drawing-changed");
     }
-    notify("drawing-changed");
+  } else if (latestAction == two) {
+    if (arrayOfEmojis.length > zero) {
+      const undidEmoji: Emoji | undefined = arrayOfEmojis.pop();
+      if (undidEmoji != undefined) {
+        undoneEmojis.push(undidEmoji);
+      }
+      undoneActions.push(latestAction);
+      notify("drawing-changed");
+    }
+  } else {
+    console.log("No action to undo!");
   }
 });
 
@@ -166,12 +187,27 @@ const redoButton = document.createElement("button");
 redoButton.innerHTML = button3;
 app.append(redoButton);
 redoButton.addEventListener("click", () => {
-  if (undoneLines.length > zero) {
-    const redidLine: Command | undefined = undoneLines.pop();
-    if (redidLine != undefined) {
-      arrayOfLines.push(redidLine);
+  const latestUndidAction = undoneActions.pop();
+  if (latestUndidAction == one) {
+    if (undoneLines.length > zero) {
+      const redidLine: Command | undefined = undoneLines.pop();
+      if (redidLine != undefined) {
+        arrayOfLines.push(redidLine);
+      }
+      arrayOfActions.push(one);
+      notify("drawing-changed");
     }
-    notify("drawing-changed");
+  } else if (latestUndidAction == two) {
+    if (undoneEmojis.length > zero) {
+      const redidEmoji: Emoji | undefined = undoneEmojis.pop();
+      if (redidEmoji != undefined) {
+        arrayOfEmojis.push(redidEmoji);
+      }
+      arrayOfActions.push(two);
+      notify("drawing-changed");
+    }
+  } else {
+    console.log("Nothing to redo!");
   }
 });
 
@@ -184,6 +220,7 @@ app.append(thinButton);
 thinButton.addEventListener("click", () => {
   console.log("thiN!");
   thickChecker = toolRadius = one;
+  emojiInidcator = zero;
 });
 
 // THICK canvas button
@@ -194,6 +231,7 @@ app.append(thickButton);
 thickButton.addEventListener("click", () => {
   console.log("THICK!!");
   thickChecker = toolRadius = five;
+  emojiInidcator = zero;
 });
 
 let emojiInidcator = 0;
@@ -202,7 +240,7 @@ const sticker1 = document.createElement("button");
 sticker1.innerHTML = button6;
 app.append(sticker1);
 sticker1.addEventListener("click", (e) => {
-  emojiInidcator = 1;
+  emojiInidcator = one;
 });
 
 const button7 = "🎃";
@@ -210,7 +248,7 @@ const sticker2 = document.createElement("button");
 sticker2.innerHTML = button7;
 app.append(sticker2);
 sticker2.addEventListener("click", (e) => {
-  emojiInidcator = 2;
+  emojiInidcator = two;
 });
 
 const button8 = "💀";
@@ -218,8 +256,9 @@ const sticker3 = document.createElement("button");
 sticker3.innerHTML = button8;
 app.append(sticker3);
 sticker3.addEventListener("click", () => {
-  emojiInidcator = 3;
+  emojiInidcator = three;
 });
+
 canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
   y = e.offsetY;
@@ -227,19 +266,25 @@ canvas.addEventListener("mousedown", (e) => {
     m.x = e.offsetX;
     m.y = e.offsetY;
     m.radius = toolRadius;
-  } else {
+  } else if (emojiInidcator == zero) {
     m = new Mouse(e.offsetX, e.offsetY, toolRadius);
   }
   isDrawing = true;
   currentLine = new Command();
-  if (emojiInidcator == 1) {
+  if (emojiInidcator == one) {
     const newEmoji = new Emoji(x, y, "😂");
+    arrayOfEmojis.push(newEmoji);
+    arrayOfActions.push(two);
     newEmoji.display(ctx);
-  } else if (emojiInidcator == 2) {
+  } else if (emojiInidcator == two) {
     const newEmoji = new Emoji(x, y, "🎃");
+    arrayOfEmojis.push(newEmoji);
+    arrayOfActions.push(two);
     newEmoji.display(ctx);
-  } else if (emojiInidcator == 3) {
+  } else if (emojiInidcator == three) {
     const newEmoji = new Emoji(x, y, "💀");
+    arrayOfEmojis.push(newEmoji);
+    arrayOfActions.push(two);
     newEmoji.display(ctx);
   } else if (thickChecker > one) {
     currentLine.drag(x - one, y - one);
@@ -250,9 +295,11 @@ canvas.addEventListener("mousedown", (e) => {
     currentLine.drag(x + one, y - one);
     currentLine.drag(x + one, y);
     currentLine.drag(x + one, y + one);
+    arrayOfActions.push(one);
     notify("drawing-changed");
   } else {
     currentLine.drag(x, y);
+    arrayOfActions.push(one);
     notify("drawing-changed");
   }
 });
@@ -265,7 +312,7 @@ canvas.addEventListener("mousemove", (e) => {
   } else {
     m = new Mouse(e.offsetX, e.offsetY, toolRadius);
   }
-  if (isDrawing) {
+  if (isDrawing && emojiInidcator == zero) {
     x = e.offsetX;
     y = e.offsetY;
     if (thickChecker > one) {
@@ -289,7 +336,7 @@ canvas.addEventListener("mouseup", (e) => {
     m.x = e.offsetX;
     m.y = e.offsetY;
     m.radius = toolRadius;
-  } else {
+  } else if (emojiInidcator == zero) {
     m = new Mouse(e.offsetX, e.offsetY, toolRadius);
   }
   if (isDrawing) {
