@@ -239,7 +239,7 @@ const button6 = "😂";
 const sticker1 = document.createElement("button");
 sticker1.innerHTML = button6;
 app.append(sticker1);
-sticker1.addEventListener("click", (e) => {
+sticker1.addEventListener("click", () => {
   emojiInidcator = one;
 });
 
@@ -247,7 +247,7 @@ const button7 = "🎃";
 const sticker2 = document.createElement("button");
 sticker2.innerHTML = button7;
 app.append(sticker2);
-sticker2.addEventListener("click", (e) => {
+sticker2.addEventListener("click", () => {
   emojiInidcator = two;
 });
 
