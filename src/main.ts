@@ -31,6 +31,7 @@ const zero = 0;
 const one = 1;
 const two = 2;
 const three = 3;
+const four = 4;
 const five = 5;
 let toolRadius = 0;
 let thickChecker = 0; // 1 is thin, 5 is thick
@@ -129,7 +130,7 @@ canvas.addEventListener(
       emoji.display(ctx);
     }
   },
-  false,
+  false
 );
 canvas.addEventListener(
   "tool-moved",
@@ -137,7 +138,7 @@ canvas.addEventListener(
     // Fires whenever the user moves mouse over canvas.
     m.drawLine(ctx);
   },
-  false,
+  false
 );
 
 // clear canvas button
@@ -259,6 +260,19 @@ sticker3.addEventListener("click", () => {
   emojiInidcator = three;
 });
 
+let customStickerText: string;
+const button9 = "Custom Sticker";
+const sticker4 = document.createElement("button");
+sticker4.innerHTML = button9;
+app.append(sticker4);
+sticker4.addEventListener("click", () => {
+  //Add custom sticker
+  const promptMsg = window.prompt("Enter Custom Sticker:", "")!;
+  console.log(promptMsg);
+  customStickerText = promptMsg;
+  emojiInidcator = four;
+});
+
 canvas.addEventListener("mousedown", (e) => {
   x = e.offsetX;
   y = e.offsetY;
@@ -283,6 +297,11 @@ canvas.addEventListener("mousedown", (e) => {
     newEmoji.display(ctx);
   } else if (emojiInidcator == three) {
     const newEmoji = new Emoji(x, y, "💀");
+    arrayOfEmojis.push(newEmoji);
+    arrayOfActions.push(two);
+    newEmoji.display(ctx);
+  } else if (emojiInidcator == four) {
+    const newEmoji = new Emoji(x, y, customStickerText);
     arrayOfEmojis.push(newEmoji);
     arrayOfActions.push(two);
     newEmoji.display(ctx);
