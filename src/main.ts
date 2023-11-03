@@ -129,7 +129,7 @@ canvas.addEventListener(
       emoji.display(ctx);
     }
   },
-  false
+  false,
 );
 canvas.addEventListener(
   "tool-moved",
@@ -137,7 +137,7 @@ canvas.addEventListener(
     // Fires whenever the user moves mouse over canvas.
     m.drawLine(ctx);
   },
-  false
+  false,
 );
 
 // clear canvas button

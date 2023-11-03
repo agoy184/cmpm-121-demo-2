@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #FE9666;
+  background-color: #fe9666;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -67,7 +67,7 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #FE9666;
+    color: #fe9666;
     background-color: #ffffff;
   }
 
@@ -88,7 +88,6 @@ canvas {
   border-top-right-radius: 20px 20px;
   border-bottom-right-radius: 20px 20px;
   border-bottom-left-radius: 20px 20px;
-
 }
 
 div {
@@ -101,14 +100,13 @@ div {
   background-color: #f9f9f9;
 
   color: red;
-  
+
   border-radius: 4px 3px 6px / 2px 4px;
 
   border-top-left-radius: 4px 2px;
   border-top-right-radius: 3px 4px;
   border-bottom-right-radius: 6px 2px;
   border-bottom-left-radius: 3px 4px;
-  
 }
 
 div:nth-child(1) {
@@ -126,4 +124,3 @@ div:nth-child(3) {
 div:nth-child(4) {
   filter: drop-shadow(-16px -6px black);
 }
-
