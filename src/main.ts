@@ -74,13 +74,21 @@ class Emoji {
   x: number;
   y: number;
   emoji: string;
-  constructor(x: number, y: number, emoji: string) {
+  rotation: number; // Add a rotation property
+
+  constructor(x: number, y: number, emoji: string, rotation: number) {
     this.x = x;
     this.y = y;
     this.emoji = emoji;
+    this.rotation = rotation;
   }
+
   display(ctx: CanvasRenderingContext2D) {
-    ctx.fillText(this.emoji, this.x, this.y);
+    ctx.save(); // Save the current canvas state
+    ctx.translate(this.x, this.y); // Translate to the emoji's position
+    ctx.rotate(this.rotation); // Apply the rotation
+    ctx.fillText(this.emoji, zero, zero); // Draw the emoji at (0, 0)
+    ctx.restore(); // Restore the canvas state
   }
 }
 
@@ -336,22 +344,26 @@ canvas.addEventListener("mousedown", (e) => {
   isDrawing = true;
   currentLine = new Command();
   if (emojiInidcator == one) {
-    const newEmoji = new Emoji(x, y, "😂");
+    const randomRotation = Math.random() * (two * Math.PI);
+    const newEmoji = new Emoji(x, y, "😂", randomRotation);
     arrayOfEmojis.push(newEmoji);
     arrayOfActions.push(two);
     newEmoji.display(ctx);
   } else if (emojiInidcator == two) {
-    const newEmoji = new Emoji(x, y, "🎃");
+    const randomRotation = Math.random() * (two * Math.PI);
+    const newEmoji = new Emoji(x, y, "🎃", randomRotation);
     arrayOfEmojis.push(newEmoji);
     arrayOfActions.push(two);
     newEmoji.display(ctx);
   } else if (emojiInidcator == three) {
-    const newEmoji = new Emoji(x, y, "💀");
+    const randomRotation = Math.random() * (two * Math.PI);
+    const newEmoji = new Emoji(x, y, "💀", randomRotation);
     arrayOfEmojis.push(newEmoji);
     arrayOfActions.push(two);
     newEmoji.display(ctx);
   } else if (emojiInidcator == four) {
-    const newEmoji = new Emoji(x, y, customStickerText);
+    const randomRotation = Math.random() * (two * Math.PI);
+    const newEmoji = new Emoji(x, y, customStickerText, randomRotation);
     arrayOfEmojis.push(newEmoji);
     arrayOfActions.push(two);
     newEmoji.display(ctx);
