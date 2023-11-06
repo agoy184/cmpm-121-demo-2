@@ -213,24 +213,22 @@ redoButton.addEventListener("click", () => {
 });
 
 // thin canvas button
-const button4 = "thin";
+const button4 = "Thin";
 
 const thinButton = document.createElement("button");
 thinButton.innerHTML = button4;
 app.append(thinButton);
 thinButton.addEventListener("click", () => {
-  console.log("thiN!");
   thickChecker = toolRadius = one;
   emojiInidcator = zero;
 });
 
 // THICK canvas button
-const button5 = "thick";
+const button5 = "Thick";
 const thickButton = document.createElement("button");
 thickButton.innerHTML = button5;
 app.append(thickButton);
 thickButton.addEventListener("click", () => {
-  console.log("THICK!!");
   thickChecker = toolRadius = five;
   emojiInidcator = zero;
 });
