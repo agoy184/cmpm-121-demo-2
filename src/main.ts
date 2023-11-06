@@ -261,7 +261,7 @@ sticker3.addEventListener("click", () => {
 });
 
 let customStickerText: string;
-const button9 = "Custom Sticker";
+const button9 = "Custom";
 const sticker4 = document.createElement("button");
 sticker4.innerHTML = button9;
 app.append(sticker4);
@@ -271,6 +271,58 @@ sticker4.addEventListener("click", () => {
   console.log(promptMsg);
   customStickerText = promptMsg;
   emojiInidcator = four;
+});
+
+const buttonX = "Export";
+const exportButton = document.createElement("button");
+exportButton.innerHTML = buttonX;
+app.append(exportButton);
+exportButton.addEventListener("click", () => {
+  // Create new canvas
+  const canvasExport = document.createElement("canvas");
+  canvasExport.width = 1024;
+  canvasExport.height = 1024;
+  const canvasExportX = 0;
+  const canvasExportY = 0;
+
+  const ctx = canvasExport.getContext("2d")!;
+  ctx.fillStyle = "yellow";
+  ctx.fillRect(
+    canvasExportX,
+    canvasExportY,
+    canvasExport.width,
+    canvasExport.height
+  );
+  app.append(canvasExport);
+
+  // Prep CanvasRenderingContext2D object for canvas using scale(x, y)
+  // (Should be 4x larger)
+  ctx.scale(four, four);
+
+  ctx.fillStyle = "white";
+  ctx.fillRect(
+    canvasExportX,
+    canvasExportY,
+    canvasExport.width,
+    canvasExport.height
+  );
+
+  // Execute all items on display list
+  // redraw lines
+  for (const line of arrayOfLines) {
+    line.display(ctx);
+  }
+  // redraw emojis
+  for (const emoji of arrayOfEmojis) {
+    emoji.display(ctx);
+  }
+
+  // Trigger file download w/ contests of canvas as PNG file
+  const file = canvasExport.toDataURL("image/png");
+  const dataFile = document.createElement("a");
+  dataFile.href = file;
+  (dataFile.download = "drawing.png"), dataFile.click();
+  app.removeChild(canvasExport);
 });
 
 canvas.addEventListener("mousedown", (e) => {
