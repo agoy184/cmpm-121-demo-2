@@ -219,16 +219,26 @@ redoButton.addEventListener("click", () => {
     console.log("Nothing to redo!");
   }
 });
+// Define an array of colors
+const markerColors = ["red", "blue", "green", "orange", "purple"];
+
+// Function to randomly select a color
+function getRandomColor() {
+  const randomIndex = Math.floor(Math.random() * markerColors.length);
+  return markerColors[randomIndex];
+}
 
 // thin canvas button
-const button4 = "Thin";
 
+const button4 = "Thin";
 const thinButton = document.createElement("button");
 thinButton.innerHTML = button4;
 app.append(thinButton);
 thinButton.addEventListener("click", () => {
   thickChecker = toolRadius = one;
   emojiInidcator = zero;
+  const color = getRandomColor(); // Get a random color
+  thinButton.style.color = color; // Set the button text color
 });
 
 // THICK canvas button
@@ -239,6 +249,8 @@ app.append(thickButton);
 thickButton.addEventListener("click", () => {
   thickChecker = toolRadius = five;
   emojiInidcator = zero;
+  const color = getRandomColor(); // Get a random color
+  thickButton.style.color = color; // Set the button text color
 });
 
 let emojiInidcator = 0;
@@ -428,5 +440,3 @@ canvas.addEventListener("mouseup", (e) => {
     notify("drawing-changed");
   }
 });
-
-//onmousemove = (event) => { };
